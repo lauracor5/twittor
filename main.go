@@ -9,6 +9,8 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	lambda "github.com/aws/aws-lambda-go/lambda"
 	"github.com/lauracor5/twittor.git/awsgo"
+	"github.com/lauracor5/twittor.git/bd"
+	"github.com/lauracor5/twittor.git/handlers"
 	"github.com/lauracor5/twittor.git/models"
 	"github.com/lauracor5/twittor.git/secretmanager"
 )
@@ -53,11 +55,39 @@ func ExecuteLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("user"), secretModel.Username)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("password"), secretModel.Password)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("host"), secretModel.Host)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("dataabse"), secretModel.Databse)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("databse"), secretModel.Databse)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("jwtsing"), secretModel.JWTSing)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("body"), request.Body)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("bucketName"), os.Getenv("BucketName"))
 
+	// Chequeo a la conexión a la base de datos
+
+	err = bd.ConectarBD(awsgo.Ctx)
+	if err != nil {
+		response = &events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Error al conectar a la base de datos " + err.Error(),
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+		}
+		return response, nil
+	}
+
+	responseApi := handlers.Manejadores(awsgo.Ctx, request)
+
+	if responseApi.CustomRepsonse == nil {
+		response = &events.APIGatewayProxyResponse{
+			StatusCode: responseApi.Status,
+			Body:       responseApi.Message,
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+		}
+		return response, nil
+	} else {
+		return responseApi.CustomRepsonse, nil
+	}
 }
 
 func ValidateParameters() bool {
