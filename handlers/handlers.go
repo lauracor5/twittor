@@ -17,7 +17,7 @@ func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) mod
 	var res models.ResponseApi
 	res.Status = 400
 
-	isOk, statusCode, message, claim := validateAuthorization(ctx, request)
+	isOk, statusCode, message, _ := validateAuthorization(ctx, request)
 
 	if !isOk {
 		res.Status = statusCode

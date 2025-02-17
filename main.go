@@ -109,4 +109,6 @@ func ValidateParameters() bool {
 		return traeParametro
 	}
 
+	return traeParametro
+
 }
