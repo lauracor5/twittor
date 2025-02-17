@@ -1,6 +1,6 @@
 package models
 
-import "github/aws/aws-lambda-go/events"
+import "github.com/aws/aws-lambda-go/events"
 
 type ResponseApi struct {
 	Status         int
