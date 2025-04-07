@@ -51,7 +51,7 @@ func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) mod
 }
 
 func validateAuthorization(ctx context.Context, request events.APIGatewayProxyRequest) (bool, int, string, models.Claim) {
-	path := ctx.Value(models.Key("payh")).(string)
+	path := ctx.Value(models.Key("path")).(string)
 
 	if path == "registro" || path == "login" || path == "obtenerAvatar" || path == "obtenerBanner" {
 		return true, 200, "", models.Claim{}
