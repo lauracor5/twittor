@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	jwt "github.com/golang-jwt/jwt/v5"
+	"github.com/lauracor5/twittor.git/bd"
 	"github.com/lauracor5/twittor.git/models"
 )
 
@@ -27,7 +28,14 @@ func ProcesarToken(token string, JWTSign string) (*models.Claim, bool, string, e
 	})
 
 	if err == nil {
-		// Rurina que Cheqeuea contra la BD
+		// Rutina que Cheqeuea contra la BD
+		_, encontrado, _ := bd.ChequeoYaExisteUsuario(claims.Email)
+		if encontrado {
+			Email = claims.Email
+			IDUsuario = claims.ID.Hex()
+		}
+		return &claims, encontrado, claims.ID.Hex(), nil
+
 	}
 
 	if !tokenParserClaims.Valid {

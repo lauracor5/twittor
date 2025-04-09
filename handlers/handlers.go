@@ -36,6 +36,8 @@ func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) mod
 
 	case "GET":
 		switch ctx.Value(models.Key("path")).(string) {
+		case "verperfil":
+			return routers.VerPerfil(request)
 		}
 
 	case "PUT":
@@ -64,7 +66,7 @@ func validateAuthorization(ctx context.Context, request events.APIGatewayProxyRe
 		return false, 400, "Token requerido", models.Claim{}
 	}
 
-	claim, todoOK, msg, err := jwt.ProcesarToken(token, ctx.Value(models.Key("jwtsing")).(string))
+	claim, todoOK, msg, err := jwt.ProcesarToken(token, ctx.Value(models.Key("jwtSign")).(string))
 
 	if !todoOK {
 		if err != nil {
