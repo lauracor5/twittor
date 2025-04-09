@@ -56,7 +56,7 @@ func ExecuteLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("password"), secretModel.Password)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("host"), secretModel.Host)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("databse"), secretModel.Databse)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("jwtsing"), secretModel.JWTSing)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("jwtSign"), secretModel.JWTSing)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("body"), request.Body)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("bucketName"), os.Getenv("BucketName"))
 
